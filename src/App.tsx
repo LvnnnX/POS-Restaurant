@@ -5,10 +5,11 @@ import { CalculatorPanel } from './components/calculator'
 
 function App() {
   return (
-    <div className="h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 overflow-hidden">
+    <div className="h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 overflow-hidden">
       <Navbar />
       <MainLayout
         leftPanel={<OrderList />}
+        centerPanel={<CalculatorPanel />}
         rightPanel={
           <div className="h-full flex flex-col">
             <SubNavbar />
@@ -20,7 +21,6 @@ function App() {
       />
       <PaymentModal />
       <Receipt />
-      <CalculatorPanel />
     </div>
   )
 }

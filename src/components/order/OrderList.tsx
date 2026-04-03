@@ -1,13 +1,15 @@
 import { OrderItem } from './OrderItem'
 import { useOrderStore } from '../../store/orderSlice'
 import { useUIStore } from '../../store/uiSlice'
-import { Printer, CreditCard, Calculator } from 'lucide-react'
+import { Printer, CreditCard, User } from 'lucide-react'
+import { formatCurrency } from '../../types/constants'
 
 export function OrderList() {
   const items = useOrderStore((state) => state.items)
+  const buyerName = useOrderStore((state) => state.buyerName)
+  const setBuyerName = useOrderStore((state) => state.setBuyerName)
   const tax = useOrderStore((state) => state.tax())
   const total = useOrderStore((state) => state.total())
-  const toggleCalculator = useUIStore((state) => state.toggleCalculator)
   const setPaymentModalOpen = useUIStore((state) => state.setPaymentModalOpen)
 
   const handlePrint = () => window.print()
@@ -15,23 +17,38 @@ export function OrderList() {
   const isEmpty = items.length === 0
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-slate-900">
       {/* Header */}
       <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-4 py-3 flex-shrink-0">
         <h2 className="text-lg font-semibold">Current Order</h2>
         <p className="text-emerald-100 text-sm">{items.length} item{items.length !== 1 ? 's' : ''}</p>
       </div>
 
+      {/* Buyer Name Section */}
+      <div className="bg-slate-800 px-4 py-3 border-b border-slate-700 flex-shrink-0">
+        <div className="relative">
+          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Buyer name..."
+            value={buyerName}
+            onChange={(e) => setBuyerName(e.target.value)}
+            className="w-full bg-slate-700 border border-slate-600 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 min-h-[40px]"
+            aria-label="Buyer name"
+          />
+        </div>
+      </div>
+
       {/* Scrollable items area - this will show scrollbar when content overflows */}
-      <div className="flex-1 overflow-y-auto min-h-0 p-4">
+      <div className="flex-1 overflow-y-auto min-h-0 p-4 bg-slate-900">
         {isEmpty ? (
           <div className="h-full flex items-center justify-center text-center">
             <div className="space-y-3">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
-                <Printer className="w-8 h-8 text-emerald-500" />
+              <div className="w-16 h-16 bg-emerald-600/20 rounded-full flex items-center justify-center mx-auto border border-emerald-500">
+                <Printer className="w-8 h-8 text-emerald-400" />
               </div>
               <p className="text-emerald-400 text-sm">No items in order</p>
-              <p className="text-emerald-300 text-xs">Tap products to add</p>
+              <p className="text-slate-400 text-xs">Tap products to add</p>
             </div>
           </div>
         ) : (
@@ -44,24 +61,24 @@ export function OrderList() {
       </div>
 
       {/* Sticky Summary + Actions - fixed at bottom */}
-      <div className="border-t-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-4 flex-shrink-0">
+      <div className="border-t-2 border-emerald-600 bg-slate-800 p-4 flex-shrink-0">
         {/* Summary */}
         <div className="space-y-2 mb-4">
-          <div className="flex justify-between text-sm text-emerald-700">
+          <div className="flex justify-between text-sm text-emerald-300">
             <span>Tax (10%)</span>
-            <span>${tax.toFixed(2)}</span>
+            <span>{formatCurrency(tax)}</span>
           </div>
-          <div className="flex justify-between text-xl font-bold text-emerald-800 border-t border-emerald-200 pt-2">
+          <div className="flex justify-between text-xl font-bold text-white border-t border-emerald-600 pt-2">
             <span>Total</span>
-            <span className="text-emerald-600">${total.toFixed(2)}</span>
+            <span className="text-emerald-400">{formatCurrency(total)}</span>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <button 
             onClick={handlePrint} 
-            className="flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-700 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-600"
             aria-label="Print receipt"
           >
             <Printer className="w-4 h-4" />
@@ -74,14 +91,6 @@ export function OrderList() {
           >
             <CreditCard className="w-4 h-4" />
             <span>Pay</span>
-          </button>
-          <button 
-            onClick={toggleCalculator} 
-            className="flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-700 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
-            aria-label="Toggle calculator"
-          >
-            <Calculator className="w-4 h-4" />
-            <span>Calc</span>
           </button>
         </div>
       </div>

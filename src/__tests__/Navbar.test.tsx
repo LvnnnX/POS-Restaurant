@@ -5,7 +5,7 @@ import { describe, it, expect } from 'vitest'
 describe('Navbar', () => {
   it('renders all three sections', () => {
     render(<Navbar />)
-    expect(screen.getByText('Restaurant POS')).toBeInTheDocument()
+    expect(screen.getByText('Warung Nusantara')).toBeInTheDocument()
     expect(screen.getByText('Admin: John Doe')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
   })

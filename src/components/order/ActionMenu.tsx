@@ -1,6 +1,7 @@
 import { Printer, CreditCard, Calculator } from 'lucide-react'
 import { useUIStore } from '../../store/uiSlice'
 import { useOrderStore } from '../../store/orderSlice'
+import { formatCurrency } from '../../types/constants'
 
 export function ActionMenu() {
   const toggleCalculator = useUIStore((state) => state.toggleCalculator)
@@ -21,7 +22,7 @@ export function ActionMenu() {
       <button
         onClick={handlePrint}
         className="flex flex-col items-center gap-1 bg-slate-600 hover:bg-slate-700 text-white rounded-lg py-3 text-sm font-medium min-h-[44px] transition-colors"
-        aria-label={`Print bill - total ${total.toFixed(2)}`}
+        aria-label={`Print bill - total ${formatCurrency(total)}`}
       >
         <Printer className="w-5 h-5" />
         <span>Print Bill</span>
