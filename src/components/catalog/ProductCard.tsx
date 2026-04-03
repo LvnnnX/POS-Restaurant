@@ -1,4 +1,4 @@
-import { Image } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import type { Product } from '../../types'
 import { useOrderStore } from '../../store/orderSlice'
 
@@ -17,14 +17,28 @@ export function ProductCard({ product }: ProductCardProps) {
     <button
       onClick={handleClick}
       aria-label={`Add ${product.name} to order, $${product.price.toFixed(2)}`}
-      className="aspect-square border border-slate-200 rounded-xl bg-white hover:shadow-md hover:border-blue-300 active:scale-95 transition-shadow cursor-pointer flex flex-col overflow-hidden min-h-[44px] min-w-[44px] text-left"
+      className="aspect-square border border-emerald-200 rounded-2xl bg-white/90 backdrop-blur-sm hover:shadow-xl hover:border-emerald-300 hover:scale-105 active:scale-100 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden min-h-[44px] min-w-[44px] text-left group"
     >
-      <div className="bg-slate-100 rounded-t-xl h-2/3 flex items-center justify-center">
-        <Image className="w-8 h-8 text-slate-400" />
+      <div className="bg-gradient-to-br from-emerald-100 to-teal-100 rounded-t-2xl h-2/3 flex items-center justify-center relative overflow-hidden">
+        <img 
+          src={product.imageUrl} 
+          alt={product.name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none'
+            e.currentTarget.nextElementSibling?.classList.remove('hidden')
+          }}
+        />
+        <div className="hidden w-full h-full flex items-center justify-center">
+          <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center">
+            <Plus className="w-6 h-6 text-white" />
+          </div>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
       </div>
-      <div className="flex flex-col flex-1">
-        <span className="font-semibold text-sm truncate px-2 pt-1">{product.name}</span>
-        <span className="text-lg font-bold text-blue-600 px-2 pb-2">${product.price.toFixed(2)}</span>
+      <div className="flex flex-col flex-1 p-3 bg-white/95">
+        <span className="font-semibold text-sm text-emerald-800 truncate mb-1">{product.name}</span>
+        <span className="text-lg font-bold text-emerald-600">${product.price.toFixed(2)}</span>
       </div>
     </button>
   )

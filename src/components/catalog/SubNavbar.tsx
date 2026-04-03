@@ -43,9 +43,9 @@ export function SubNavbar() {
   }
 
   return (
-    <div className="flex flex-col flex-shrink-0">
+    <div className="flex flex-col flex-shrink-0 bg-white">
       {/* Category Tabs */}
-      <div className="h-12 bg-slate-100 border-b border-slate-200 flex items-center px-2 gap-1 overflow-x-auto">
+      <div className="h-14 bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-200 flex items-center px-4 gap-2 overflow-x-auto">
         {categories.map((cat) => {
           const Icon = cat.icon
           const isActive = selectedCategory === cat.id
@@ -53,10 +53,10 @@ export function SubNavbar() {
             <button
               key={cat.id ?? 'home'}
               onClick={() => handleCategoryClick(cat.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium min-h-[40px] whitespace-nowrap transition-colors ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium min-h-[42px] whitespace-nowrap transition-all duration-200 ${
                 isActive 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-white text-slate-700 hover:bg-slate-200'
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' 
+                  : 'bg-white/80 text-emerald-700 hover:bg-emerald-100 hover:shadow-md border border-emerald-200'
               }`}
               aria-label={`Category ${cat.label}`}
               aria-pressed={isActive}
@@ -68,19 +68,15 @@ export function SubNavbar() {
         })}
       </div>
 
-      {/* Breadcrumb + Search */}
-      <nav
-        role="navigation"
-        aria-label="Catalog navigation"
-        className="h-12 bg-slate-50 border-b border-slate-200 flex items-center justify-between px-4"
-      >
-        {/* Left: Breadcrumb showing current category */}
+      {/* Search Bar */}
+      <div className="h-12 bg-white border-b border-emerald-100 flex items-center justify-between px-4">
+        {/* Left: Breadcrumb */}
         <div className="flex items-center">
-          <span className="text-slate-400 text-sm">Home</span>
+          <span className="text-emerald-400 text-sm">Home</span>
           {selectedCategory && (
             <>
-              <span className="text-slate-400 mx-1">&gt;</span>
-              <span className="text-slate-500 font-medium text-sm">
+              <span className="text-emerald-400 mx-2">•</span>
+              <span className="text-emerald-600 font-medium text-sm">
                 {categories.find(c => c.id === selectedCategory)?.label || selectedCategory}
               </span>
             </>
@@ -89,10 +85,10 @@ export function SubNavbar() {
 
         {/* Right: Search */}
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Search dishes..."
             value={inputValue}
             onChange={(e) => {
               const value = e.target.value
@@ -102,11 +98,11 @@ export function SubNavbar() {
                 setSelectedCategory(null)
               }
             }}
-            className="bg-white border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-sm w-48 focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[44px]"
+            className="bg-emerald-50/50 border border-emerald-200 rounded-xl pl-9 pr-4 py-2 text-sm w-56 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 min-h-[40px] placeholder-emerald-400"
             aria-label="Search products"
           />
         </div>
-      </nav>
+      </div>
     </div>
   )
 }

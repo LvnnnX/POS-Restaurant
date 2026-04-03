@@ -11,7 +11,8 @@ beforeEach(() => {
 describe('OrderList', () => {
   it('shows empty state when no items', () => {
     render(<OrderList />)
-    expect(screen.getByText('No items in order — tap products to add')).toBeInTheDocument()
+    expect(screen.getByText('No items in order')).toBeInTheDocument()
+    expect(screen.getByText('Tap products to add')).toBeInTheDocument()
   })
 
   it('displays tax and total when items exist', () => {
@@ -24,7 +25,7 @@ describe('OrderList', () => {
       }] as any
     })
     render(<OrderList />)
-    expect(screen.getByText('Tax')).toBeInTheDocument()
+    expect(screen.getByText('Tax (10%)')).toBeInTheDocument()
     expect(screen.getByText('Total')).toBeInTheDocument()
   })
 })

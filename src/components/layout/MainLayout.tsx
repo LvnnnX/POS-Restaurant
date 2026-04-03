@@ -12,7 +12,7 @@ export function MainLayout({ leftPanel, rightPanel }: MainLayoutProps) {
       <section
         role="main"
         aria-label="Order management panel"
-        className="w-full lg:w-auto bg-slate-50 border-r border-slate-200 h-full overflow-hidden flex flex-col"
+        className="w-full lg:w-auto bg-white/90 backdrop-blur-sm border-r border-emerald-200 h-full overflow-hidden flex flex-col shadow-lg"
       >
         {leftPanel}
       </section>
@@ -21,7 +21,7 @@ export function MainLayout({ leftPanel, rightPanel }: MainLayoutProps) {
       <section
         role="main"
         aria-label="Food catalog panel"
-        className="w-full lg:w-auto bg-white h-full overflow-hidden flex flex-col"
+        className="w-full lg:w-auto bg-white/70 backdrop-blur-sm h-full overflow-hidden flex flex-col"
       >
         {rightPanel}
       </section>

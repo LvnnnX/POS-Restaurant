@@ -1,9 +1,20 @@
 @import "tailwindcss";
 
-/* Global scrollbar styling for consistency */
+/* Prevent page-level scrolling */
+html, body {
+  overflow: hidden;
+  height: 100vh;
+}
+
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Global scrollbar styling with emerald theme */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-color: #10b981 transparent;
 }
 
 *::-webkit-scrollbar {
@@ -16,14 +27,14 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1;
+  background-color: #10b981;
   border-radius: 4px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8;
+  background-color: #059669;
 }
 
 /* Ensure flex containers can shrink properly for scrolling */
@@ -31,10 +42,10 @@
   min-height: 0;
 }
 
-/* Focus visible states for accessibility */
+/* Focus visible states for accessibility with emerald theme */
 *:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px white, 0 0 0 4px #3b82f6;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #10b981;
 }
 
 /* Reduced motion support */
