@@ -1,0 +1,28 @@
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import { ProductCard } from '../components/catalog/ProductCard'
+import type { Product } from '../types'
+
+const mockProduct: Product = {
+  id: 'test-1',
+  name: 'Test Burger',
+  price: 9.99,
+  category: 'Burgers',
+  isAvailable: true
+}
+
+describe('ProductCard', () => {
+  it('renders product name and price', () => {
+    render(<ProductCard product={mockProduct} />)
+    expect(screen.getByText('Test Burger')).toBeInTheDocument()
+    expect(screen.getByText('$9.99')).toBeInTheDocument()
+  })
+
+  it('has aria-label with product info', () => {
+    render(<ProductCard product={mockProduct} />)
+    expect(screen.getByRole('button')).toHaveAttribute(
+      'aria-label',
+      'Add Test Burger to order, $9.99'
+    )
+  })
+})
