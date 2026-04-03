@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { ProductCard } from './ProductCard'
 import { useCatalogStore } from '../../store/catalogSlice'
+import { menuItems } from '../../mocks/data/menu'
 import type { Product } from '../../types'
 
 export function ProductGrid() {
@@ -9,10 +10,20 @@ export function ProductGrid() {
   const getFilteredProducts = useCatalogStore((state) => state.getFilteredProducts)
 
   useEffect(() => {
-    fetch('/api/menu')
-      .then((res) => res.json())
-      .then((data: Product[]) => setProducts(data))
-      .catch((err) => console.error('Failed to fetch menu:', err))
+    // In development, use MSW API; in production, use static data
+    if (import.meta.env.DEV) {
+      fetch('/api/menu')
+        .then((res) => res.json())
+        .then((data: Product[]) => setProducts(data))
+        .catch((err) => {
+          console.error('Failed to fetch menu:', err)
+          // Fallback to static data if MSW fails
+          setProducts(menuItems)
+        })
+    } else {
+      // Production: use static menu data directly
+      setProducts(menuItems)
+    }
   }, [setProducts])
 
   const filteredProducts = getFilteredProducts()
