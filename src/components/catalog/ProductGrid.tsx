@@ -28,24 +28,24 @@ export function ProductGrid() {
 
   const filteredProducts = getFilteredProducts()
 
-  if (filteredProducts.length === 0 && products.length > 0) {
-    return (
-      <div className="flex-1 overflow-y-auto flex items-center justify-center text-slate-400 text-sm min-h-0">
-        No products found
-      </div>
-    )
-  }
-
   if (products.length === 0) {
     return (
-      <div className="flex-1 overflow-y-auto flex items-center justify-center text-slate-400 text-sm min-h-0">
+      <div className="h-full flex items-center justify-center text-slate-400 text-sm">
         Loading products...
       </div>
     )
   }
 
+  if (filteredProducts.length === 0) {
+    return (
+      <div className="h-full flex items-center justify-center text-slate-400 text-sm">
+        No products found
+      </div>
+    )
+  }
+
   return (
-    <div className="flex-1 overflow-y-auto p-4 min-h-0">
+    <div className="h-full overflow-y-auto p-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />

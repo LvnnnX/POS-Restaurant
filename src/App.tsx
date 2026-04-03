@@ -15,10 +15,12 @@ function App() {
           </>
         }
         rightPanel={
-          <>
+          <div className="h-full flex flex-col">
             <SubNavbar />
-            <ProductGrid />
-          </>
+            <div className="flex-1 min-h-0">
+              <ProductGrid />
+            </div>
+          </div>
         }
       />
       <PaymentModal />

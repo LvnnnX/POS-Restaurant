@@ -33,8 +33,17 @@ export function SubNavbar() {
     return () => clearTimeout(timer)
   }, [inputValue, setSearchQuery])
 
+  const handleCategoryClick = (categoryId: string | null) => {
+    setSelectedCategory(categoryId)
+    // Clear search when selecting a category
+    if (categoryId !== null) {
+      setInputValue('')
+      setSearchQuery('')
+    }
+  }
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col flex-shrink-0">
       {/* Category Tabs */}
       <div className="h-12 bg-slate-100 border-b border-slate-200 flex items-center px-2 gap-1 overflow-x-auto">
         {categories.map((cat) => {
@@ -43,7 +52,7 @@ export function SubNavbar() {
           return (
             <button
               key={cat.id ?? 'home'}
-              onClick={() => setSelectedCategory(cat.id)}
+              onClick={() => handleCategoryClick(cat.id)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium min-h-[40px] whitespace-nowrap transition-colors ${
                 isActive 
                   ? 'bg-blue-600 text-white' 
@@ -85,7 +94,14 @@ export function SubNavbar() {
             type="text"
             placeholder="Search products..."
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value
+              setInputValue(value)
+              // Clear category selection when searching
+              if (value.trim() && selectedCategory) {
+                setSelectedCategory(null)
+              }
+            }}
             className="bg-white border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-sm w-48 focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[44px]"
             aria-label="Search products"
           />

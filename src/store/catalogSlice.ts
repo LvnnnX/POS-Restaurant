@@ -32,6 +32,7 @@ export const useCatalogStore = create<CatalogState>((set, get) => ({
       // Only filter by category when NOT searching
       filtered = filtered.filter(p => p.category === selectedCategory)
     }
+    
     return filtered
   },
 }))
