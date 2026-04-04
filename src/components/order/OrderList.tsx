@@ -1,7 +1,9 @@
 import { OrderItem } from './OrderItem'
 import { useOrderStore } from '../../store/orderSlice'
 import { useUIStore } from '../../store/uiSlice'
-import { Printer, CreditCard, User } from 'lucide-react'
+import { Printer, CreditCard, User, Calculator } from 'lucide-react'
+import CalculatorPopup from '../calculator/CalculatorPopup'
+import { useRef, useState } from 'react'
 import { formatCurrency } from '../../types/constants'
 
 export function OrderList() {
@@ -11,10 +13,14 @@ export function OrderList() {
   const tax = useOrderStore((state) => state.tax())
   const total = useOrderStore((state) => state.total())
   const setPaymentModalOpen = useUIStore((state) => state.setPaymentModalOpen)
+  // Calculator popup state and anchor (div wrapper acts as anchor for accurate positioning)
+  const calcAnchorDivRef = useRef<HTMLDivElement | null>(null)
+  const [isCalcOpen, setCalcOpen] = useState(false)
 
   const handlePrint = () => window.print()
 
   const isEmpty = items.length === 0
+  const completeOrder = useOrderStore((state) => state.completeOrder)
 
   return (
     <div className="h-full flex flex-col bg-slate-900">
@@ -35,6 +41,7 @@ export function OrderList() {
             onChange={(e) => setBuyerName(e.target.value)}
             className="w-full bg-slate-700 border border-slate-600 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 min-h-[40px]"
             aria-label="Buyer name"
+            data-testid="buyer-name"
           />
         </div>
       </div>
@@ -74,25 +81,49 @@ export function OrderList() {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-3">
-          <button 
-            onClick={handlePrint} 
-            className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-600"
-            aria-label="Print receipt"
-          >
-            <Printer className="w-4 h-4" />
-            <span>Print</span>
-          </button>
-          <button 
-            onClick={() => setPaymentModalOpen(true)} 
-            className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl py-3 text-sm font-bold min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
-            aria-label="Process payment"
-          >
-            <CreditCard className="w-4 h-4" />
-            <span>Pay</span>
-          </button>
+      {/* Action Buttons */}
+      <div className="grid grid-cols-3 gap-3">
+        <button 
+          onClick={handlePrint} 
+          className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-600"
+          aria-label="Print receipt"
+          data-testid="print-receipt"
+        >
+          <Printer className="w-4 h-4" />
+          <span>Print</span>
+        </button>
+        <button 
+          onClick={() => setPaymentModalOpen(true)} 
+          className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl py-3 text-sm font-bold min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
+          aria-label="Process payment"
+          data-testid="open-payment-modal"
+        >
+          <CreditCard className="w-4 h-4" />
+          <span>Pay</span>
+        </button>
+        <div ref={calcAnchorDivRef} style={{ display: 'inline-block' }}>
+        <button 
+          onClick={() => setCalcOpen(true)} 
+          className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-600"
+          aria-label="Open calculator"
+          data-testid="open-calculator"
+        >
+          <Calculator className="w-4 h-4" />
+          <span>Calculator</span>
+        </button>
         </div>
+        <button
+          onClick={completeOrder}
+          disabled={isEmpty}
+          className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl py-3 text-sm font-bold min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
+          aria-label="Complete order"
+          data-testid="complete-order"
+        >
+          <span>Complete Order</span>
+        </button>
+      </div>
+      {/* Positioned CalculatorPopup above the Calculator button */}
+      <CalculatorPopup anchorRef={calcAnchorDivRef as any} open={isCalcOpen} onClose={() => setCalcOpen(false)} />
       </div>
     </div>
   )
