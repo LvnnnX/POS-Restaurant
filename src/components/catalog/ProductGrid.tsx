@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useMemo } from 'react'
 import { ProductCard } from './ProductCard'
 import { useCatalogStore } from '../../store/catalogSlice'
 import { menuItems } from '../../mocks/data/menu'
@@ -9,6 +10,8 @@ export function ProductGrid() {
   const products = useCatalogStore((state) => state.products)
   const setProducts = useCatalogStore((state) => state.setProducts)
   const getFilteredProducts = useCatalogStore((state) => state.getFilteredProducts)
+  const selectedCategory = useCatalogStore((state) => state.selectedCategory)
+  const setSelectedCategory = useCatalogStore((state) => state.setSelectedCategory)
 
   useEffect(() => {
     // In development, use MSW API; in production, use static data
@@ -28,6 +31,12 @@ export function ProductGrid() {
   }, [setProducts])
 
   const filteredProducts = getFilteredProducts()
+  // Derive categories from currently loaded products
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(products.map((p) => p.category)))
+    // Sort for stable UX
+    return cats.sort()
+  }, [products])
 
   if (products.length === 0) {
     return (
@@ -59,6 +68,32 @@ export function ProductGrid() {
 
   return (
     <div className="h-full overflow-y-auto p-6 bg-slate-900">
+      {/* Categories filter bar (visible in Menu view) */}
+      {categories.length > 0 && (
+        <div className="mb-4" aria-label="Categories">
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => { setSelectedCategory(null) }}
+              className={selectedCategory == null
+                ? 'px-3 py-1 rounded-md bg-emerald-700 text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium'}
+            >
+              All
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => { setSelectedCategory(cat === selectedCategory ? null : cat) }}
+                className={cat === selectedCategory
+                  ? 'px-3 py-1 rounded-md bg-emerald-700 text-white text-sm font-medium'
+                  : 'px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium'}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />

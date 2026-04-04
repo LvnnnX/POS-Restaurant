@@ -15,6 +15,7 @@ interface OrderState {
   updateNotes: (productId: string, notes: string) => void
   setBuyerName: (name: string) => void
   setPaymentMethod: (method: string) => void
+  validateBuyerName: () => boolean
   clearCart: () => void
   subtotal: () => number
   tax: () => number
@@ -52,6 +53,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     )
   })),
   setBuyerName: (name) => set({ buyerName: name }),
+  validateBuyerName: () => get().buyerName.trim().length > 0,
   clearCart: () => set({ items: [], buyerName: '', paymentMethod: '', admin: '' }),
   subtotal: () => get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
   tax: () => get().subtotal() * TAX_RATE,
@@ -69,6 +71,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       id: String(Date.now()),
       buyerName: get().buyerName,
       total: get().total(),
+      status: 'PROCESS',
       items: currentItems.map((ci): WaitingListItem => ({
         name: ci.product.name,
         quantity: ci.quantity,

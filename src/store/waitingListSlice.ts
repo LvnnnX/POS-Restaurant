@@ -5,6 +5,8 @@ export interface WaitingListItem {
   name: string;
   quantity: number;
   price: number;
+  // Optional per-item notes (from cart item notes)
+  notes?: string;
 }
 
 export interface WaitingListEntry {
@@ -13,11 +15,17 @@ export interface WaitingListEntry {
   total: number;
   items: WaitingListItem[];
   timestamp: number;
+  status: 'PROCESS' | 'DONE';
+  // Optional order-wide data captured during completion
+  notes?: string;
+  paymentMethod?: string;
+  admin?: string;
 }
 
 export interface WaitingListSlice {
   waitingList: WaitingListEntry[];
   addToWaitingList: (entry: WaitingListEntry) => void;
+  updateOrderStatus: (orderId: string, status: 'PROCESS' | 'DONE') => void;
   getWaitingList: () => WaitingListEntry[];
   clearWaitingList: () => void;
 }
@@ -29,6 +37,14 @@ export const useWaitingListStore = create<WaitingListSlice>((set, get) => ({
   addToWaitingList: (entry: WaitingListEntry) => {
     const current = get().waitingList;
     set({ waitingList: [...current, entry] });
+  },
+
+  updateOrderStatus: (orderId: string, status: 'PROCESS' | 'DONE') => {
+    const current = get().waitingList;
+    const updated = current.map(order => 
+      order.id === orderId ? { ...order, status } : order
+    );
+    set({ waitingList: updated });
   },
 
   getWaitingList: () => get().waitingList,

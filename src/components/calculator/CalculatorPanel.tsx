@@ -3,9 +3,6 @@ import { useState, useCallback } from 'react'
 export function CalculatorPanel() {
   const [display, setDisplay] = useState('0')
   // Additional inputs for E2E tests
-  const [inputA, setInputA] = useState<string>('')
-  const [inputB, setInputB] = useState<string>('')
-  const [result, setResult] = useState<string>('')
 
   // Safe calculation without eval
   const calculate = useCallback((expr: string): string => {
@@ -69,43 +66,7 @@ export function CalculatorPanel() {
         <h3 className="text-lg font-medium">Calculator</h3>
       </div>
       
-      {/* E2E Test Input Fields */}
-      <div className="px-4 py-3 bg-slate-900 border-b border-slate-700 flex items-center gap-2" aria-label="Calculator inputs">
-        <input
-          data-testid="calc-input-a"
-          value={inputA}
-          onChange={(e) => setInputA(e.target.value)}
-          type="number"
-          placeholder="A"
-          className="bg-slate-700 text-white rounded px-2 py-1 w-20"
-        />
-        <span className="text-white/60 select-none">+</span>
-        <input
-          data-testid="calc-input-b"
-          value={inputB}
-          onChange={(e) => setInputB(e.target.value)}
-          type="number"
-          placeholder="B"
-          className="bg-slate-700 text-white rounded px-2 py-1 w-20"
-        />
-        <button
-          data-testid="calc-equals"
-          onClick={() => {
-            const a = inputA.trim()
-            const b = inputB.trim()
-            if (a === '' || b === '') return
-            const expr = `${a}+${b}`
-            const res = calculate(expr)
-            setResult(res)
-          }}
-          className="ml-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded px-3 py-1"
-        >
-          =
-        </button>
-        <div data-testid="calc-result" className="text-emerald-400 font-mono min-w-[60px] text-right">
-          {result}
-        </div>
-      </div>
+      
       
       {/* Display */}
       <div className="bg-slate-900 text-emerald-400 text-right text-2xl p-4 font-mono border-b border-slate-700 flex-shrink-0">

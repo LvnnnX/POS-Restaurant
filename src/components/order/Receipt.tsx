@@ -26,8 +26,8 @@ export function Receipt() {
       {/* Header */}
       <div className="text-center border-b-2 border-dashed border-gray-400 pb-4 mb-4">
         <h1 className="text-2xl font-bold">WARUNG NUSANTARA</h1>
-        <p className="text-xs text-gray-600">Jl. Raya Kuliner No. 123, Jakarta</p>
-        <p className="text-xs text-gray-600">Telp: (021) 123-4567</p>
+        <p className="text-xs text-gray-600">Jl. Gundal Gandul</p>
+        <p className="text-xs text-gray-600">Telp: (xxx) 123-4567</p>
       </div>
 
       {/* Order Info */}

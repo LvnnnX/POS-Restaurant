@@ -1,7 +1,8 @@
 import { OrderItem } from './OrderItem'
 import { useOrderStore } from '../../store/orderSlice'
 import { useUIStore } from '../../store/uiSlice'
-import { Printer, CreditCard, User, Calculator } from 'lucide-react'
+import { OrderConfirmationModal } from './OrderConfirmationModal'
+import { Printer, CreditCard, User, Calculator, ArrowRight } from 'lucide-react'
 import { CalculatorPanel } from '../calculator/CalculatorPanel'
 import { useState } from 'react'
 import { formatCurrency } from '../../types/constants'
@@ -10,17 +11,29 @@ export function OrderList() {
   const items = useOrderStore((state) => state.items)
   const buyerName = useOrderStore((state) => state.buyerName)
   const setBuyerName = useOrderStore((state) => state.setBuyerName)
+  const validateBuyerName = useOrderStore((state) => state.validateBuyerName)
   const tax = useOrderStore((state) => state.tax())
   const total = useOrderStore((state) => state.total())
   const paymentMethod = useOrderStore((state) => state.paymentMethod)
   const setPaymentModalOpen = useUIStore((state) => state.setPaymentModalOpen)
   // Sticky calculator state
   const [showCalculator, setShowCalculator] = useState(false)
+  const [showOrderConfirmation, setShowOrderConfirmation] = useState(false)
+  const [buyerNameError, setBuyerNameError] = useState('')
 
   const handlePrint = () => window.print()
 
+  const handleContinueTransaction = () => {
+    // Validate buyer name
+    if (!validateBuyerName()) {
+      setBuyerNameError('Buyer name cannot be empty')
+      return
+    }
+    setBuyerNameError('')
+    setShowOrderConfirmation(true)
+  }
+
   const isEmpty = items.length === 0
-  const completeOrder = useOrderStore((state) => state.completeOrder)
 
   return (
     <div className="h-full flex flex-col bg-slate-900">
@@ -38,11 +51,21 @@ export function OrderList() {
             type="text"
             placeholder="Buyer name..."
             value={buyerName}
-            onChange={(e) => setBuyerName(e.target.value)}
-            className="w-full bg-slate-700 border border-slate-600 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 min-h-[40px]"
+            onChange={(e) => {
+              setBuyerName(e.target.value)
+              if (buyerNameError) setBuyerNameError('')
+            }}
+            className={`w-full bg-slate-700 border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 transition-all duration-200 min-h-[40px] ${
+              buyerNameError 
+                ? 'border-red-500 focus:border-red-500' 
+                : 'border-slate-600 focus:border-emerald-500'
+            }`}
             aria-label="Buyer name"
             data-testid="buyer-name"
           />
+          {buyerNameError && (
+            <div className="text-red-400 text-xs mt-1">{buyerNameError}</div>
+          )}
         </div>
       </div>
 
@@ -113,13 +136,14 @@ export function OrderList() {
           <span>{showCalculator ? 'Hide Calculator' : 'Show Calculator'}</span>
         </button>
         <button
-          onClick={completeOrder}
+          onClick={handleContinueTransaction}
           disabled={isEmpty}
-          className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl py-3 text-sm font-bold min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
-          aria-label="Complete order"
-          data-testid="complete-order"
+          className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl py-3 text-sm font-bold min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label="Continue transaction"
+          data-testid="continue-transaction"
         >
-          <span>Complete Order</span>
+          <ArrowRight className="w-4 h-4" />
+          <span>Continue Transaction</span>
         </button>
       </div>
       {showCalculator && (
@@ -128,6 +152,12 @@ export function OrderList() {
         </div>
       )}
       </div>
+
+      {/* Order Confirmation Modal */}
+      <OrderConfirmationModal 
+        isOpen={showOrderConfirmation} 
+        onClose={() => setShowOrderConfirmation(false)} 
+      />
     </div>
   )
 }
