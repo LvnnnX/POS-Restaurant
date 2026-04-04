@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import type { CartItem, Product } from '../types'
 import { TAX_RATE } from '../types/constants'
+import type { WaitingListEntry, WaitingListItem } from './waitingListSlice'
+import { useWaitingListStore } from './waitingListSlice'
 
 interface OrderState {
   items: CartItem[]
@@ -14,6 +16,7 @@ interface OrderState {
   subtotal: () => number
   tax: () => number
   total: () => number
+  completeOrder: () => void
 }
 
 export const useOrderStore = create<OrderState>((set, get) => ({
@@ -48,4 +51,26 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   subtotal: () => get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
   tax: () => get().subtotal() * TAX_RATE,
   total: () => get().subtotal() + get().tax(),
+  completeOrder: () => {
+    const currentItems = get().items
+    if (currentItems.length === 0) return
+
+    const entry: WaitingListEntry = {
+      id: String(Date.now()),
+      buyerName: get().buyerName,
+      total: get().total(),
+      items: currentItems.map((ci): WaitingListItem => ({
+        name: ci.product.name,
+        quantity: ci.quantity,
+        price: ci.product.price
+      })),
+      timestamp: Date.now()
+    }
+
+    // Access waiting list store without using hooks inside actions
+    useWaitingListStore.getState().addToWaitingList(entry)
+
+    // Clear active cart after moving to waiting list
+    set({ items: [], buyerName: '' })
+  },
 }))
