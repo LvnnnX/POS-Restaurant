@@ -15,6 +15,7 @@ interface OrderState {
   updateNotes: (productId: string, notes: string) => void
   setBuyerName: (name: string) => void
   setPaymentMethod: (method: string) => void
+  setAdminName: (name: string) => void
   validateBuyerName: () => boolean
   clearCart: () => void
   subtotal: () => number

@@ -2,7 +2,7 @@
 import type { WaitingListEntry } from '../../store/waitingListSlice'
 import { formatCurrency } from '../../types/constants'
 import React, { useEffect, useRef } from 'react'
-import { Clock, CheckCircle } from 'lucide-react'
+import { Clock, CheckCircle, Banknote, CreditCard } from 'lucide-react'
 
 export function OrderDetail({ order, onClose }: { order?: WaitingListEntry; onClose: () => void }) {
   if (!order) return null
@@ -49,10 +49,10 @@ export function OrderDetail({ order, onClose }: { order?: WaitingListEntry; onCl
           <div className="text-sm text-slate-300 mb-2">Buyer: <span className="text-white font-medium">{order.buyerName}</span></div>
           <div className="text-sm text-slate-300 mb-2">Time: <span className="text-white font-medium">{new Date(order.timestamp).toLocaleString()}</span></div>
           
-          {/* Status Display */}
-          <div className="text-sm text-slate-300 mt-3">
-            Status: 
-            <span className={`inline-flex items-center gap-1 ml-2 px-3 py-1 rounded-full text-xs font-medium ${
+          {/* Status and Payment Display */}
+          <div className="flex items-center gap-2 mt-3">
+            <span className="text-sm text-slate-300">Status:</span>
+            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
               order.status === 'PROCESS' 
                 ? 'bg-orange-600/20 text-orange-300 border border-orange-500/50' 
                 : 'bg-green-600/20 text-green-300 border border-green-500/50'
@@ -60,6 +60,22 @@ export function OrderDetail({ order, onClose }: { order?: WaitingListEntry; onCl
               {order.status === 'PROCESS' ? <Clock className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
               {order.status}
             </span>
+
+            {order.paymentMethod && (
+              <>
+                <span className="text-sm text-slate-300 ml-4">Payment:</span>
+                <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border ${
+                  order.paymentMethod === 'Cash' 
+                    ? 'bg-green-600/20 text-green-300 border-green-500/50' 
+                    : 'bg-blue-600/20 text-blue-300 border-blue-500/50'
+                }`}>
+                  {order.paymentMethod === 'Cash' 
+                    ? <Banknote className="w-3 h-3" /> 
+                    : <CreditCard className="w-3 h-3" />}
+                  {order.paymentMethod}
+                </span>
+              </>
+            )}
           </div>
         </div>
 
@@ -84,11 +100,6 @@ export function OrderDetail({ order, onClose }: { order?: WaitingListEntry; onCl
           <span className="text-white">Total</span>
           <span className="text-emerald-400">{formatCurrency(order.total)}</span>
         </div>
-        {order.paymentMethod ? (
-          <div className="text-sm text-slate-300 mt-3 pt-3 border-t border-slate-700">
-            Payment Method: <span className="text-emerald-300 font-medium">{order.paymentMethod}</span>
-          </div>
-        ) : null}
       </div>
     </div>
   )

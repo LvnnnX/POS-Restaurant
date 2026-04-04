@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useOrderStore } from '../../store/orderSlice'
+import { useAdminStore } from '../../store/adminSlice'
 import { formatCurrency } from '../../types/constants'
 import { CreditCard, Printer } from 'lucide-react'
 
@@ -14,8 +15,10 @@ export function OrderConfirmationModal({ isOpen, onClose }: OrderConfirmationMod
   const tax = useOrderStore((state) => state.tax())
   const total = useOrderStore((state) => state.total())
   const setPaymentMethod = useOrderStore((state) => state.setPaymentMethod)
+  const setAdminName = useOrderStore((state) => state.setAdminName)
   const completeOrder = useOrderStore((state) => state.completeOrder)
   const paymentMethod = useOrderStore((state) => state.paymentMethod)
+  const adminName = useAdminStore((state) => state.adminName)
   
   const [showPaymentOptions, setShowPaymentOptions] = useState(false)
   const [orderCompleted, setOrderCompleted] = useState(false)
@@ -33,6 +36,8 @@ export function OrderConfirmationModal({ isOpen, onClose }: OrderConfirmationMod
   }
 
   const handleFinishOrder = () => {
+    // Set the admin name from the shared store before completing the order
+    setAdminName(adminName)
     completeOrder()
     onClose()
     setShowPaymentOptions(false)

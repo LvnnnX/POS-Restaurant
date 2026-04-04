@@ -1,6 +1,9 @@
 import { Utensils, LogOut } from 'lucide-react'
+import { useAdminStore } from '../../store/adminSlice'
 
 export function Navbar() {
+  const adminName = useAdminStore((state) => state.adminName)
+  
   const handleLogout = () => {
     console.log('Logout clicked')
     alert('Logout functionality placeholder')
@@ -22,7 +25,7 @@ export function Navbar() {
 
       {/* Center: Admin Name */}
       <div className="text-emerald-300 text-sm font-medium">
-        Admin: John Doe
+        Admin: {adminName}
       </div>
 
       {/* Right: Logout */}

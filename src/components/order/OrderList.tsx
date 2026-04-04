@@ -40,26 +40,28 @@ export function OrderList() {
 
       {/* Buyer Name Section */}
       <div className="bg-slate-800 px-4 py-3 border-b border-slate-700 flex-shrink-0">
-        <div className="relative">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Buyer name..."
-            value={buyerName}
-            onChange={(e) => {
-              setBuyerName(e.target.value)
-              if (buyerNameError) setBuyerNameError('')
-            }}
-            className={`w-full bg-slate-700 border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 transition-all duration-200 min-h-[40px] ${
-              buyerNameError 
-                ? 'border-red-500 focus:border-red-500' 
-                : 'border-slate-600 focus:border-emerald-500'
-            }`}
-            aria-label="Buyer name"
-            data-testid="buyer-name"
-          />
+        <div className="flex flex-col gap-1">
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Buyer name..."
+              value={buyerName}
+              onChange={(e) => {
+                setBuyerName(e.target.value)
+                if (buyerNameError) setBuyerNameError('')
+              }}
+              className={`w-full bg-slate-700 border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 transition-all duration-200 min-h-[40px] ${
+                buyerNameError 
+                  ? 'border-red-500 focus:border-red-500' 
+                  : 'border-slate-600 focus:border-emerald-500'
+              }`}
+              aria-label="Buyer name"
+              data-testid="buyer-name"
+            />
+          </div>
           {buyerNameError && (
-            <div className="text-red-400 text-xs mt-1">{buyerNameError}</div>
+            <div className="text-red-400 text-xs">{buyerNameError}</div>
           )}
         </div>
       </div>
