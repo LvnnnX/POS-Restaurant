@@ -2,8 +2,8 @@ import { OrderItem } from './OrderItem'
 import { useOrderStore } from '../../store/orderSlice'
 import { useUIStore } from '../../store/uiSlice'
 import { Printer, CreditCard, User, Calculator } from 'lucide-react'
-import CalculatorPopup from '../calculator/CalculatorPopup'
-import { useRef, useState } from 'react'
+import { CalculatorPanel } from '../calculator/CalculatorPanel'
+import { useState } from 'react'
 import { formatCurrency } from '../../types/constants'
 
 export function OrderList() {
@@ -12,10 +12,10 @@ export function OrderList() {
   const setBuyerName = useOrderStore((state) => state.setBuyerName)
   const tax = useOrderStore((state) => state.tax())
   const total = useOrderStore((state) => state.total())
+  const paymentMethod = useOrderStore((state) => state.paymentMethod)
   const setPaymentModalOpen = useUIStore((state) => state.setPaymentModalOpen)
-  // Calculator popup state and anchor (div wrapper acts as anchor for accurate positioning)
-  const calcAnchorDivRef = useRef<HTMLDivElement | null>(null)
-  const [isCalcOpen, setCalcOpen] = useState(false)
+  // Sticky calculator state
+  const [showCalculator, setShowCalculator] = useState(false)
 
   const handlePrint = () => window.print()
 
@@ -47,7 +47,8 @@ export function OrderList() {
       </div>
 
       {/* Scrollable items area - this will show scrollbar when content overflows */}
-      <div className="flex-1 overflow-y-auto min-h-0 p-4 bg-slate-900">
+      {/* Added a dedicated scrollbar class to style and ensure isolation of scrolling to this area only */}
+      <div className="flex-1 overflow-y-auto min-h-0 p-4 bg-slate-900 order-list-scrollarea">
         {isEmpty ? (
           <div className="h-full flex items-center justify-center text-center">
             <div className="space-y-3">
@@ -67,8 +68,8 @@ export function OrderList() {
         )}
       </div>
 
-      {/* Sticky Summary + Actions - fixed at bottom */}
-      <div className="border-t-2 border-emerald-600 bg-slate-800 p-4 flex-shrink-0">
+      {/* Sticky Summary + Actions - bottom bar with calculator toggle (sticky) */}
+      <div className="border-t-2 border-emerald-600 bg-slate-800 p-4 flex-shrink-0 sticky bottom-0 z-20">
         {/* Summary */}
         <div className="space-y-2 mb-4">
           <div className="flex justify-between text-sm text-emerald-300">
@@ -82,16 +83,18 @@ export function OrderList() {
         </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-3 gap-3">
-        <button 
-          onClick={handlePrint} 
-          className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-600"
-          aria-label="Print receipt"
-          data-testid="print-receipt"
-        >
-          <Printer className="w-4 h-4" />
-          <span>Print</span>
-        </button>
+      <div className="grid grid-cols-4 gap-3">
+        {paymentMethod && (
+          <button 
+            onClick={handlePrint} 
+            className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-600"
+            aria-label="Print receipt"
+            data-testid="print-receipt"
+          >
+            <Printer className="w-4 h-4" />
+            <span>Print</span>
+          </button>
+        )}
         <button 
           onClick={() => setPaymentModalOpen(true)} 
           className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl py-3 text-sm font-bold min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
@@ -101,17 +104,14 @@ export function OrderList() {
           <CreditCard className="w-4 h-4" />
           <span>Pay</span>
         </button>
-        <div ref={calcAnchorDivRef} style={{ display: 'inline-block' }}>
-        <button 
-          onClick={() => setCalcOpen(true)} 
-          className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-600"
-          aria-label="Open calculator"
-          data-testid="open-calculator"
+        <button
+          onClick={() => setShowCalculator((s) => !s)}
+          className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
+          aria-label="Toggle calculator"
         >
           <Calculator className="w-4 h-4" />
-          <span>Calculator</span>
+          <span>{showCalculator ? 'Hide Calculator' : 'Show Calculator'}</span>
         </button>
-        </div>
         <button
           onClick={completeOrder}
           disabled={isEmpty}
@@ -122,8 +122,11 @@ export function OrderList() {
           <span>Complete Order</span>
         </button>
       </div>
-      {/* Positioned CalculatorPopup above the Calculator button */}
-      <CalculatorPopup anchorRef={calcAnchorDivRef as any} open={isCalcOpen} onClose={() => setCalcOpen(false)} />
+      {showCalculator && (
+        <div className="w-full mt-2" style={{ height: 320, overflow: 'hidden' }} aria-label="Sticky calculator" data-testid="sticky-calculator">
+          <CalculatorPanel />
+        </div>
+      )}
       </div>
     </div>
   )

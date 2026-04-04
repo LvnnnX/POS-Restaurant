@@ -6,6 +6,7 @@ export function PaymentModal() {
   const isPaymentModalOpen = useUIStore((state) => state.isPaymentModalOpen)
   const setPaymentModalOpen = useUIStore((state) => state.setPaymentModalOpen)
   const total = useOrderStore((state) => state.total())
+  const setPaymentMethod = useOrderStore((state) => state.setPaymentMethod)
 
   if (!isPaymentModalOpen) return null
 
@@ -27,16 +28,24 @@ export function PaymentModal() {
         </div>
         <div className="flex gap-2 mb-4">
           <button
+            onClick={() => {
+              setPaymentMethod('Cash')
+              setPaymentModalOpen(false)
+            }}
             className="flex-1 bg-green-600 hover:bg-green-700 text-white rounded-lg py-3 font-medium min-h-[44px] transition-colors"
             aria-label="Pay with cash"
           >
             Cash
           </button>
           <button
+            onClick={() => {
+              setPaymentMethod('Transfer')
+              setPaymentModalOpen(false)
+            }}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-3 font-medium min-h-[44px] transition-colors"
-            aria-label="Pay with card"
+            aria-label="Pay with transfer"
           >
-            Card
+            Transfer
           </button>
         </div>
         <button
