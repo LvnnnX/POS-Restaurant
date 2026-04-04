@@ -1,8 +1,7 @@
 import { OrderItem } from './OrderItem'
 import { useOrderStore } from '../../store/orderSlice'
-import { useUIStore } from '../../store/uiSlice'
 import { OrderConfirmationModal } from './OrderConfirmationModal'
-import { Printer, CreditCard, User, Calculator, ArrowRight } from 'lucide-react'
+import { User, Calculator, ArrowRight, ShoppingCart } from 'lucide-react'
 import { CalculatorPanel } from '../calculator/CalculatorPanel'
 import { useState } from 'react'
 import { formatCurrency } from '../../types/constants'
@@ -14,14 +13,10 @@ export function OrderList() {
   const validateBuyerName = useOrderStore((state) => state.validateBuyerName)
   const tax = useOrderStore((state) => state.tax())
   const total = useOrderStore((state) => state.total())
-  const paymentMethod = useOrderStore((state) => state.paymentMethod)
-  const setPaymentModalOpen = useUIStore((state) => state.setPaymentModalOpen)
   // Sticky calculator state
   const [showCalculator, setShowCalculator] = useState(false)
   const [showOrderConfirmation, setShowOrderConfirmation] = useState(false)
   const [buyerNameError, setBuyerNameError] = useState('')
-
-  const handlePrint = () => window.print()
 
   const handleContinueTransaction = () => {
     // Validate buyer name
@@ -76,7 +71,7 @@ export function OrderList() {
           <div className="h-full flex items-center justify-center text-center">
             <div className="space-y-3">
               <div className="w-16 h-16 bg-emerald-600/20 rounded-full flex items-center justify-center mx-auto border border-emerald-500">
-                <Printer className="w-8 h-8 text-emerald-400" />
+                <ShoppingCart className="w-8 h-8 text-emerald-400" />
               </div>
               <p className="text-emerald-400 text-sm">No items in order</p>
               <p className="text-slate-400 text-xs">Tap products to add</p>
@@ -106,27 +101,7 @@ export function OrderList() {
         </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-4 gap-3">
-        {paymentMethod && (
-          <button 
-            onClick={handlePrint} 
-            className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-600"
-            aria-label="Print receipt"
-            data-testid="print-receipt"
-          >
-            <Printer className="w-4 h-4" />
-            <span>Print</span>
-          </button>
-        )}
-        <button 
-          onClick={() => setPaymentModalOpen(true)} 
-          className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl py-3 text-sm font-bold min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
-          aria-label="Process payment"
-          data-testid="open-payment-modal"
-        >
-          <CreditCard className="w-4 h-4" />
-          <span>Pay</span>
-        </button>
+      <div className="grid grid-cols-2 gap-3">
         <button
           onClick={() => setShowCalculator((s) => !s)}
           className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl py-3 text-sm font-medium min-h-[44px] transition-all duration-200 shadow-lg hover:shadow-xl"
